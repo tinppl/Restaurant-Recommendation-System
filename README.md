@@ -1,2 +1,45 @@
-# Restaurant-Recommendation-System
-KoBART 기반 Naver 리뷰 요약과 SBERT 코사인 유사도를 활용하여 사용자 맞춤형 식당을 추천하는 시스템입니다. (Text Analysis-based Restaurant Recommendation System)
+# 🍜 텍스트 분석 기반 레스토랑 추천 시스템 (KoBART & SBERT 활용)
+Restaurant-Recommendation-System
+
+## 📌 프로젝트 개요
+
+본 프로젝트는 네이버(Naver) 리뷰 데이터를 활용하여 사용자의 구체적인 요구사항과 선호하는 분위기를 반영한 **개인 맞춤형 레스토랑 추천 시스템**을 개발하는 것을 목표로 합니다.
+
+기존의 평점이나 단순 검색 방식에서 벗어나, 텍스트 분석(TA) 기술을 사용하여 리뷰 데이터에서 사용자 요구에 맞는 키워드를 추출하고, 정교한 추천 결과를 제공합니다.
+
+## ⚙️ 주요 기술 스택 및 방법론
+
+| 카테고리 | 기술/모델 | 역할 및 설명 |
+| :--- | :--- | :--- |
+| **자연어 처리 (NLP)** | [cite_start]**KoBART (Kakao Brain)** [cite: 91, 92] | 한국어 최적화된 BART 모델. [cite_start]장문의 레스토랑 리뷰들을 **추상적 요약(Abstractive Summarization)**하여 분석 데이터셋의 편향성을 줄이고 신뢰도를 높이는 데 사용했습니다. |
+| **임베딩/유사도** | [cite_start]**Sentence-BERT (SBERT)** [cite: 96, 97] | [cite_start]문장 전체의 문맥과 의미를 벡터로 효과적으로 변환하여 임베딩합니다[cite: 98]. 이를 통해 단순 키워드 매칭이 아닌, 사용자의 입력 의도를 정확히 파악하는 데 활용되었습니다. |
+| **유사도 측정** | [cite_start]**Cosine Similarity** [cite: 100, 101] | [cite_start]벡터화된 사용자 입력과 레스토랑 리뷰 요약본 간의 **방향적 유사성**을 측정하여 추천의 핵심 점수를 산출합니다[cite: 103]. |
+| **데이터 수집** | Naver Maps 리뷰 데이터 | [cite_start]Chrome 확장 프로그램인 Listly를 사용하여 수집 및 가공했습니다[cite: 107, 110]. |
+
+## 🌟 추천 모델 구성 및 특징
+
+사용자의 다양한 요구를 충족시키기 위해 두 가지 추천 모델을 설계했습니다. 두 모델 모두 SBERT와 코사인 유사도를 기반으로 합니다.
+
+### 1. Model 1: 리뷰 유사성 집중 모델 (Similarity-Focused)
+
+* [cite_start]**추천 기준:** 요약 리뷰와 사용자 입력 간의 **텍스트 유사성(Review Similarity)**에 가장 큰 가중치를 두어 추천합니다[cite: 256].
+* [cite_start]**키워드 활용:** 사용자 입력에서 추출된 지역 및 카테고리 키워드로 필터링을 수행한 후, 리뷰 유사도와 동반자 정보를 보조적으로 결합합니다[cite: 219, 256].
+* [cite_start]**특징:** 구조가 단순하고 실행 속도가 빠르며, 사용자가 언급한 분위기나 음식 종류에 대한 텍스트적 요구를 효과적으로 반영합니다[cite: 62, 258].
+
+### 2. Model 2: 다중 요소 반영 모델 (Multi-Factor Balanced)
+
+* [cite_start]**추천 기준:** **리뷰 유사성**뿐만 아니라 **대기 시간(Wait Time)**, **동반자 정보(Companion Info)** 등 다양한 정량적 요소를 균형 있게 결합하여 추천합니다[cite: 231, 239, 244, 256].
+* [cite_start]**가중치 배분:** 각 요소(유사도, 대기 시간, 동반자)에 가중치(Weights)를 부여하여 최종 점수를 산출합니다[cite: 245, 256].
+* [cite_start]**특징:** 사용자 입력의 모든 세부 조건(ex: "대기시간 10분 이내", "가족과 함께")을 반영하여 **가장 개인화되고 정교한** 추천 결과를 제공합니다[cite: 64, 253, 258].
+
+## 📊 모델 평가 (Summarization Evaluation)
+
+추천 시스템의 기반이 되는 KoBART 요약 모델의 성능을 평가했습니다.
+
+| 평가 지표 | Model 2 평균 점수 | 평가 결과 요약 |
+| :--- | :--- | :--- |
+| **BERT Score Precision** | [cite_start]0.7159 [cite: 304] | [cite_start]요약 내용이 원본 텍스트와 **의미적으로 잘 일치함**[cite: 304]. |
+| **BERT Score Recall** | [cite_start]0.6586 [cite: 306] | [cite_start]원본 정보의 **대부분이 요약에 보존됨**[cite: 306]. |
+| **BERT Score F1 Score** | [cite_start]0.6858 [cite: 308] | [cite_start]요약본이 전반적으로 원본과 **높은 의미적 일관성**을 보임[cite: 308]. |
+
+---
